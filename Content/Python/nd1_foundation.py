@@ -129,7 +129,8 @@ def build():
     char_mesh = next(c for c in components if isinstance(c, unreal.SkeletalMeshComponent))
     char_mesh.set_editor_property('skeletal_mesh', mesh)
     char_mesh.set_editor_property('relative_location', unreal.Vector(0, 0, -88))
-    char_mesh.set_editor_property('relative_rotation', unreal.Rotator(pitch=0, yaw=270, roll=0))
+    # Import yaw 270 already makes the supplied mesh face +X in Unreal.
+    char_mesh.set_editor_property('relative_rotation', unreal.Rotator(pitch=0, yaw=0, roll=0))
     movement = next(c for c in components if isinstance(c, unreal.CharacterMovementComponent))
     movement.set_editor_property('orient_rotation_to_movement', True)
     movement.set_editor_property('rotation_rate', unreal.Rotator(pitch=0, yaw=1080, roll=0))
