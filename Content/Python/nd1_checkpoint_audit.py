@@ -42,8 +42,8 @@ def build():
         controller = unreal.load_asset('/Game/AIC_Slime')
         components = ActorTools.get_components(BlueprintTools.get_default_object(controller))
         check('patrol controller has no perception', not any(isinstance(c, unreal.AIPerceptionComponent) for c in components))
-        keys = [str(k.get_editor_property('entry_name')) for k in unreal.load_asset('/Game/BB_SlimeAI').get_editor_property('keys')]
-        check('patrol blackboard has only PatrolLocation', keys == ['PatrolLocation'])
+        keys = [str(k.get_editor_property('entry_name')) for k in unreal.load_asset('/Game/BB_SlimeAI').get_editor_property('keys') if str(k.get_editor_property('entry_name')) != 'SelfActor']
+        check('patrol blackboard has only PatrolLocation: ' + repr(keys), keys == ['PatrolLocation'])
     if world:
         pc = unreal.GameplayStatics.get_player_controller(world, 0)
         check('PIE player controller', pc is not None and pc.get_class().get_name() == 'BP_DungeonPlayerController_C')

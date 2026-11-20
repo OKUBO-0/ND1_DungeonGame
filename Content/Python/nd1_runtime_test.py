@@ -194,7 +194,10 @@ def _tick(delta):
                 _snapshot('patrolling')
                 _teleport(s,(-650,-1500,57),0)
                 _teleport(p,(1800,1500,90),0)
-                path=unreal.NavigationSystemV1.find_path_to_location_synchronously(_state['world'],s.get_actor_location(),p.get_actor_location(),s)
+                # Invoke on the world-owned system. The Python static wrapper's
+                # editor world guard otherwise queries the NavigationSystem CDO.
+                nav=unreal.NavigationSystemV1.get_navigation_system(_state['world'])
+                path=nav.call_method('FindPathToLocationSynchronously',(_state['world'],s.get_actor_location(),p.get_actor_location(),s,None))
                 points=list(path.get_editor_property('path_points')) if path else []
                 _check('obstacle route is valid and bends around walls',bool(path) and path.is_valid() and not path.is_partial() and len(points)>=3,{'points':[[v.x,v.y,v.z] for v in points]})
                 bb.set_value_as_object('TargetActor',p)
