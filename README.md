@@ -8,7 +8,7 @@ Unreal Engine 5.8 のダンジョン探索教材 2-1〜2-4。
 
 | ブランチ | 終了時点の内容 |
 |---|---|
-| `02-01` | CubeMan、カメラ相対移動、左右キーのカメラ回転、反転設定 |
+| `02-01` | CubeManと3本のアニメーション取込、カメラ相対移動、カメラ回転、反転設定 |
 | `02-02` | Idle/Run、足音、加算・減算 BSP による迷路と出入口 |
 | `02-03` | Slime、NavMesh、ランダム巡回、Walk/Run の移動モード |
 | `02-04` | 視覚による発見、追跡、見失いタイマー、巡回復帰 |
@@ -34,13 +34,6 @@ UE 標準 ModelContextProtocol / EditorToolset / PythonScriptPlugin を使用し
 エディタ起動時に `http://127.0.0.1:8000/mcp` で待ち受けます。
 別プロジェクトで同じポートを使用しないでください。
 
-## 実行結果 GIF
-
-`Docs/GIF/` に各教材の実際の PIE 画面を保存します。GIF は無音です。
-足音の設定と通知は `02-04` の検証スクリプトで確認できます。
-MCP の `run_stage("demo")` で録画し、`Scripts/encode-demo.ps1 -Stage 02-04` で変換できます。
-背景時の CPU 制限は録画中だけ解除し、終了時に元へ戻します。
-
 ```powershell
 node Scripts/unreal-mcp.mjs check
 node Scripts/unreal-mcp.mjs list
@@ -52,6 +45,21 @@ node Scripts/unreal-mcp.mjs describe nd1_lesson_tools.DungeonLessonTools
 FBX 入力元は `Content/Python/nd1_foundation.py` の `SOURCE` で指定します。
 `checkpoints` はブランチ分割用の内部処理で、実行中のアセットを以前の教材状態に変更します。
 通常の編集では実行不要です。
+
+## 実行結果 GIF
+
+| 教材 | 実際の PIE 画面 |
+|---|---|
+| 02-01 | [キャラクター移動・カメラ回転](Docs/GIF/02-01.gif) |
+| 02-02 | [Idle/Run・出入口通過・カメラ回転](Docs/GIF/02-02.gif) |
+| 02-03 | [Slime の待機・変形・巡回](Docs/GIF/02-03.gif) |
+| 02-04 | [Slime の発見・追跡](Docs/GIF/02-04.gif) |
+
+各教材ブランチにも、その段階の GIF を保存しています。
+GIF は無音です。足音の設定と通知は完成版の検証スクリプトで確認できます。
+MCP の `run_stage("demo")` で録画し、`Scripts/encode-demo.ps1 -Stage 02-04` で変換できます。
+背景時の CPU 制限は録画中だけ解除し、終了時に元へ戻します。
+設定値と動作の検証記録は [Docs/VERIFICATION.md](Docs/VERIFICATION.md) を参照してください。
 
 ## 教材との対応
 
