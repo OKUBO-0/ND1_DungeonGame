@@ -19,7 +19,7 @@ class DungeonLessonTools(unreal.ToolsetDefinition):
 
         Internal checkpoints stage reconstructs earlier assets and requires a Content backup.
         """
-        if stage not in {'foundation', 'controller', 'animation', 'level', 'ai', 'verification', 'runtime_test', 'checkpoints', 'checkpoint_audit'}:
+        if stage not in {'foundation', 'controller', 'animation', 'level', 'ai', 'verification', 'runtime_test', 'checkpoints', 'checkpoint_audit', 'demo', 'lesson01'}:
             raise ValueError('Unknown lesson stage')
         module = importlib.import_module('nd1_' + stage)
         importlib.reload(module)
@@ -41,6 +41,21 @@ class DungeonLessonTools(unreal.ToolsetDefinition):
             raise ValueError('Expected a public Unreal Python type name')
         obj = getattr(unreal, type_name)
         return json.dumps({'doc': obj.__doc__, 'members': [x for x in dir(obj) if not x.startswith('_')]})
+
+    @toolset_registry.tool_call
+    @staticmethod
+    def close_editor() -> str:
+        """Save dirty packages and close this project editor; stop PIE first."""
+        if unreal.EditorLevelLibrary.get_game_world():
+            raise RuntimeError('Stop PIE before closing the editor')
+        if not unreal.EditorLoadingAndSavingUtils.save_dirty_packages(True, True):
+            raise RuntimeError('Saving was cancelled or failed; editor remains open')
+        handle = []
+        def quit_next_tick(delta):
+            unreal.unregister_slate_post_tick_callback(handle[0])
+            unreal.SystemLibrary.quit_editor()
+        handle.append(unreal.register_slate_post_tick_callback(quit_next_tick))
+        return 'Saved packages; editor close scheduled'
 
 
 _registration = Registration([DungeonLessonTools])
