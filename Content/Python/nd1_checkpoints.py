@@ -16,8 +16,7 @@ from nd1_graph import clear_graph, call, link, value
 AI_ASSETS = {'ABP_Slime', 'AIC_Slime', 'AS_Slime', 'BB_SlimeAI', 'BP_Slime',
              'BT_SlimeAI', 'BTTask_ChangeToChaseMode', 'BTTask_FindRandomPatrol',
              'E_MoveMode', 'SK_Slime', 'SKEL_Slime'}
-ANIMATION_ASSETS = {'ABP_CubeMan', 'AS_CubeMan_Idle', 'AS_CubeMan_Run',
-                    'AS_CubeMan_Walk', 'SC_Footsteps',
+ANIMATION_ASSETS = {'ABP_CubeMan', 'SC_Footsteps',
                     'WS_Footstep_01', 'WS_Footstep_02', 'WS_Footstep_03', 'WS_Footstep_04'}
 
 
@@ -85,6 +84,10 @@ def build():
     mesh = next(c for c in ActorTools.get_components(BlueprintTools.get_default_object(player)) if isinstance(c, unreal.SkeletalMeshComponent))
     mesh.set_editor_property('anim_class', None)
     save_bp(player)
+    # 2-1 already imports Idle/Run/Walk; sound notifications start in 2-2.
+    run = unreal.load_asset('/Game/AS_CubeMan_Run')
+    unreal.AnimationLibrary.remove_animation_notify_events_by_track(run, 'Footsteps')
+    unreal.EditorAssetLibrary.save_loaded_asset(run, False)
     out1 = snapshot('02-01', AI_ASSETS | ANIMATION_ASSETS)
     shutil.copy2(original, out1 / 'GameLevel.umap')
     report = {'02-01': str(out1), '02-02': str(out2), '02-03': str(out3),
