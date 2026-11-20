@@ -37,6 +37,13 @@ def snapshot(name, excluded):
 
 
 def build():
+    saved = pathlib.Path(unreal.Paths.project_saved_dir())
+    original = saved / 'BeforeLessons' / 'GameLevel.umap'
+    backup = saved / 'BranchSnapshots' / 'final' / 'Content'
+    if not original.is_file() or not (backup / 'GameLevel.umap').is_file():
+        raise RuntimeError('Original level and complete final Content backup are required before reconstruction')
+    if any((saved / 'BranchSnapshots' / name).exists() for name in ['02-01', '02-02', '02-03']):
+        raise RuntimeError('Lesson snapshots already exist; no assets were changed')
     level = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
     player = unreal.load_asset('/Game/BP_CubeMan')
     BlueprintTools.get_default_object(player).set_editor_property('tags', [])
@@ -79,7 +86,6 @@ def build():
     mesh.set_editor_property('anim_class', None)
     save_bp(player)
     out1 = snapshot('02-01', AI_ASSETS | ANIMATION_ASSETS)
-    original = pathlib.Path(unreal.Paths.project_saved_dir()) / 'BeforeLessons' / 'GameLevel.umap'
     shutil.copy2(original, out1 / 'GameLevel.umap')
     report = {'02-01': str(out1), '02-02': str(out2), '02-03': str(out3),
               'note': 'Reconstructed from final assets through Unreal Editor, not historical commits.'}

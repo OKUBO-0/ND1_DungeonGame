@@ -34,6 +34,13 @@ UE 標準 ModelContextProtocol / EditorToolset / PythonScriptPlugin を使用し
 エディタ起動時に `http://127.0.0.1:8000/mcp` で待ち受けます。
 別プロジェクトで同じポートを使用しないでください。
 
+## 実行結果 GIF
+
+`Docs/GIF/` に各教材の実際の PIE 画面を保存します。GIF は無音です。
+足音の設定と通知は `02-04` の検証スクリプトで確認できます。
+MCP の `run_stage("demo")` で録画し、`Scripts/encode-demo.ps1 -Stage 02-04` で変換できます。
+背景時の CPU 制限は録画中だけ解除し、終了時に元へ戻します。
+
 ```powershell
 node Scripts/unreal-mcp.mjs check
 node Scripts/unreal-mcp.mjs list
