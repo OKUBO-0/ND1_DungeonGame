@@ -32,6 +32,7 @@ def build():
     cdo = BlueprintTools.get_default_object(player)
     mesh = next(c for c in ActorTools.get_components(cdo) if isinstance(c, unreal.SkeletalMeshComponent))
     check('player skeleton exists', mesh.get_editor_property('skeletal_mesh').get_editor_property('skeleton') is not None)
+    check('visual forward mesh offset', abs(mesh.get_editor_property('relative_rotation').yaw) < 0.001)
     check('animation assignment matches lesson', bool(mesh.get_editor_property('anim_class')) == (stage != '02-01'))
     check('Player tag matches lesson', ('Player' in [str(t) for t in cdo.get_editor_property('tags')]) == (stage == '02-04'))
     actors = unreal.GameplayStatics.get_all_actors_of_class(world, unreal.Actor) if world else unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_all_level_actors()

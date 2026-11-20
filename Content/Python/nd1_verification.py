@@ -1,6 +1,7 @@
 import unreal
 from editor_toolset.toolsets.blueprint import BlueprintTools
 from editor_toolset.toolsets.actor import ActorTools
+from nd1_facing import measure
 
 
 def audit_assets():
@@ -32,7 +33,7 @@ def audit_assets():
     check('Player capsule radius',capsule.get_editor_property('capsule_radius'),25.0)
     mesh=next(c for c in comps if isinstance(c,unreal.SkeletalMeshComponent))
     check('Player mesh Z',mesh.get_editor_property('relative_location').z,-88.0)
-    check('Player mesh yaw',mesh.get_editor_property('relative_rotation').yaw,270.0)
+    check('Player mesh yaw (FBX import already rotates 270)',mesh.get_editor_property('relative_rotation').yaw,0.0)
     movement=next(c for c in comps if isinstance(c,unreal.CharacterMovementComponent))
     check('OrientRotationToMovement',movement.get_editor_property('orient_rotation_to_movement'),True)
     check('RotationRate yaw',movement.get_editor_property('rotation_rate').yaw,1080.0)
@@ -123,6 +124,8 @@ def build():
                 if mesh:
                     data['anim_instance']=str(mesh.get_anim_instance())
                     data['mesh_skeleton']=str(mesh.get_editor_property('skeletal_mesh').get_editor_property('skeleton'))
+                    if pawn.get_class().get_name() == 'BP_CubeMan_C':
+                        data['facing'] = measure(pawn)
                 owner=pawn.get_controller()
                 if isinstance(owner,unreal.AIController):
                     data['controller']=owner.get_class().get_name()
