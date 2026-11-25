@@ -6,37 +6,8 @@ from nd1_graph import call, link, value, clear_graph
 
 
 def footsteps():
-    names = ['Drop_Item_From_ContentBrowser','Dockable_Window_Drop','Object_Snaps_To_Grid','Object_Snaps_To_Another_Actor']
-    waves = []
-    for i,name in enumerate(names,1):
-        path = '/Game/WS_Footstep_%02d' % i
-        wave = unreal.load_asset(path)
-        if not wave:
-            wave = unreal.EditorAssetLibrary.duplicate_asset('/Engine/VREditor/Sounds/UI/'+name,path)
-        if not isinstance(wave,unreal.SoundWave):
-            raise RuntimeError('Expected bundled SoundWave: '+name)
-        unreal.EditorAssetLibrary.save_loaded_asset(wave,False)
-        waves.append(wave)
-    cue = unreal.ND1DungeonEditorLibrary.build_footstep_cue(waves)
-    if not cue:
-        raise RuntimeError('Could not create SC_Footsteps')
-    unreal.EditorAssetLibrary.save_loaded_asset(cue,False)
-    run = unreal.load_asset('/Game/AS_CubeMan_Run')
-    lib = unreal.AnimationLibrary
-    track = 'Footsteps'
-    tracks = [str(n) for n in lib.get_animation_notify_track_names(run)]
-    if track not in tracks:
-        lib.add_animation_notify_track(run,track,unreal.LinearColor(0.9,0.6,0.2,1))
-    lib.remove_animation_notify_events_by_track(run,track)
-    first = lib.get_time_at_frame(run,7)
-    duration = lib.get_sequence_length(run)
-    # The reference's right-foot contact screenshot is at 0.62 seconds.
-    second = min(0.62,duration-0.001)
-    for time in [first,second]:
-        notify = lib.add_animation_notify_event(run,track,time,unreal.AnimNotify_PlaySound)
-        notify.set_editor_property('sound',cue)
-    unreal.EditorAssetLibrary.save_loaded_asset(run,False)
-    return {'sources':names,'cue':cue.get_path_name(),'volume':0.2,'contact_times':[first,second]}
+    from nd1_footsteps import build as build_footsteps
+    return build_footsteps()
 
 
 def sequence(graph, anim, x=0, y=0):

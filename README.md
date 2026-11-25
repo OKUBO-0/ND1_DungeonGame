@@ -75,12 +75,12 @@ Slime の歩行100・走行500、巡回半径500、待機3±1秒を設定して�
 
 見失い時間は説明スライドの3秒を採用しています。
 最終グラフ画像の5秒という表示とは差があります。
-足音は配布資料に音源がなかったため、ユーザー承認の上で UE 同梱の
-`/Engine/VREditor/Sounds/UI/` の次の4音を複製しています。
+足音は UE 同梱の実際の接地音
+`/NetworkPredictionExtras/Audio/Footstep_Rock_Land01` を基にした4つのバリエーションです。
+以前の UI 効果音から差し替え、わずかな音程差と高音域の調整を加えています。
+SoundCue の音量0.2、通知フレーム7と0.62秒は維持しています。
+[足音の試聴](Docs/Audio/footsteps-stone-preview.mp3) / [音源と加工仕様](SourceAssets/Audio/Footsteps/README.md)
 
-- `Drop_Item_From_ContentBrowser`
-- `Dockable_Window_Drop`
-- `Object_Snaps_To_Grid`
-- `Object_Snaps_To_Another_Actor`
+`run_stage("footsteps")` は、通常時は音源を取り込み、PIE 中は足音を1回試聴します。
 
 モデル・アニメーションと UE 由来音源は、教材・UE の利用条件に従って扱ってください。

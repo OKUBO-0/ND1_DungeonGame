@@ -1,0 +1,22 @@
+{
+  "source": "/NetworkPredictionExtras/Audio/Footstep_Rock_Land01",
+  "sample_rate": 48000,
+  "variants": [
+    {
+      "pitch": 0.96,
+      "lowpass": 5600
+    },
+    {
+      "pitch": 1,
+      "lowpass": 6300
+    },
+    {
+      "pitch": 1.04,
+      "lowpass": 6000
+    },
+    {
+      "pitch": 0.985,
+      "lowpass": 5200
+    }
+  ]
+}
