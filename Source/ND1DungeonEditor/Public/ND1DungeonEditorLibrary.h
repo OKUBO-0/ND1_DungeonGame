@@ -47,4 +47,7 @@ public:
     static bool AssignMeshSkeleton(USkeletalMesh* Mesh, USkeleton* Skeleton);
     UFUNCTION(BlueprintCallable, Category="ND1|Editor")
     static FString CapturePlayViewport();
+    /** Inject a key into PIE's player input for repeatable gameplay regression checks. */
+    UFUNCTION(BlueprintCallable, Category="ND1|Editor")
+    static bool SetPlayKey(FName Key, bool Pressed);
 };

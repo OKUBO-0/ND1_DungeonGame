@@ -33,12 +33,23 @@
 #include "Engine/UserDefinedEnum.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "ImageUtils.h"
+#include "Framework/Application/SlateApplication.h"
+#include "Widgets/SWindow.h"
 #include "UnrealClient.h"
 #include "Engine/GameViewportClient.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "Engine/SkeletalMesh.h"
 #include "Animation/Skeleton.h"
+#include "GameFramework/PlayerController.h"
+#include "InputKeyEventArgs.h"
+
+bool UND1DungeonEditorLibrary::SetPlayKey(FName Key, bool Pressed)
+{
+    UWorld* World=GEditor?GEditor->PlayWorld:nullptr;
+    APlayerController* PC=World?World->GetFirstPlayerController():nullptr;
+    return PC && PC->InputKey(FInputKeyEventArgs::CreateSimulated(FKey(Key),Pressed?IE_Pressed:IE_Released,Pressed?1.0f:0.0f));
+}
 
 UEdGraphNode* UND1DungeonEditorLibrary::SpawnGraphNode(UEdGraph* Graph, TSubclassOf<UEdGraphNode> NodeClass, FVector2D Position)
 {
@@ -110,6 +121,8 @@ void UND1DungeonEditorLibrary::RebuildLevel()
     if (!GEditor) return;
     UWorld* World = GEditor->GetEditorWorldContext().World();
     GEditor->Exec(World, TEXT("MAP REBUILD"));
+    // MAP REBUILD may recreate the editor world. Never query navigation on the old world.
+    World = GEditor->GetEditorWorldContext().World();
     if (UNavigationSystemV1* Nav = FNavigationSystem::GetCurrent<UNavigationSystemV1>(World)) Nav->Build();
     if (World) World->MarkPackageDirty();
 }
@@ -224,9 +237,21 @@ FString UND1DungeonEditorLibrary::CapturePlayViewport()
     FViewport* Viewport = GEditor->PlayWorld->GetGameViewport()->Viewport;
     if (!Viewport) return FString();
     TArray<FColor> Pixels;
-    if (!GetViewportScreenShot(Viewport,Pixels)) return FString();
-    for (FColor& Color : Pixels) Color.A=255;
     FIntPoint Size=Viewport->GetSizeXY();
+    bool Captured=false;
+    TSharedPtr<SWindow> Window=GEditor->PlayWorld->GetGameViewport()->GetWindow();
+    if (Window.IsValid())
+    {
+        const FVector2D Client=Window->GetClientSizeInScreen();
+        if (FMath::Abs(Client.X-Size.X)<96 && FMath::Abs(Client.Y-Size.Y)<96)
+        {
+            FIntVector SlateSize;
+            Captured=FSlateApplication::Get().TakeScreenshot(Window->GetContent(),Pixels,SlateSize);
+            if (Captured) Size=FIntPoint(SlateSize.X,SlateSize.Y);
+        }
+    }
+    if (!Captured && !GetViewportScreenShot(Viewport,Pixels)) return FString();
+    for (FColor& Color : Pixels) Color.A=255;
     TArray<uint8> Png;
     FImageUtils::CompressImageArray(Size.X,Size.Y,Pixels,Png);
     FString Path=FPaths::ConvertRelativePathToFull(FPaths::ProjectSavedDir()/TEXT("Verification/gameplay.png"));

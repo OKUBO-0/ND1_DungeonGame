@@ -7,5 +7,6 @@ public class ND1_DungeonGameEditorTarget : TargetRules
         DefaultBuildSettings = BuildSettingsVersion.Latest;
         IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
         ExtraModuleNames.Add("ND1DungeonEditor");
+        ExtraModuleNames.Add("ND1DungeonRuntime");
     }
 }

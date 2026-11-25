@@ -4,6 +4,7 @@
 	"Category": "",
 	"Description": "",
 	"Modules": [
+		{"Name": "ND1DungeonRuntime", "Type": "Runtime", "LoadingPhase": "Default"},
 		{"Name": "ND1DungeonEditor", "Type": "Editor", "LoadingPhase": "PostEngineInit"}
 	],
 	"Plugins": [

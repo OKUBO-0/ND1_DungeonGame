@@ -19,7 +19,7 @@ class DungeonLessonTools(unreal.ToolsetDefinition):
 
         Internal checkpoints stage reconstructs earlier assets and requires a Content backup.
         """
-        if stage not in {'foundation', 'controller', 'animation', 'level', 'ai', 'verification', 'runtime_test', 'checkpoints', 'checkpoint_audit', 'demo', 'lesson01', 'facing', 'facing_test', 'footsteps'}:
+        if stage not in {'foundation', 'controller', 'animation', 'level', 'ai', 'verification', 'runtime_test', 'checkpoints', 'checkpoint_audit', 'demo', 'lesson01', 'facing', 'facing_test', 'footsteps', 'assessment', 'assessment_test', 'assessment_input_test'}:
             raise ValueError('Unknown lesson stage')
         module = importlib.import_module('nd1_' + stage)
         importlib.reload(module)
